@@ -4,8 +4,7 @@ from flask_jwt_extended import (
     JWTManager,
     create_access_token,
     jwt_required,
-    get_jwt,
-    get_jwt_identity
+    get_jwt
 )
 from functools import wraps
 from flask_cors import CORS
@@ -14,7 +13,7 @@ import os
 
 app = Flask(__name__)
 
-# CONFIGURACIÓN
+# CONFIG
 app.config["JWT_SECRET_KEY"] = "123456"
 app.secret_key = "clave_secreta_segura"
 
@@ -23,7 +22,7 @@ bcrypt = Bcrypt(app)
 CORS(app)
 
 # -------------------------------
-# CONEXIÓN A BD (Railway)
+# CONEXIÓN A MYSQL (RAILWAY)
 # -------------------------------
 def get_connection():
     return mysql.connector.connect(
@@ -31,30 +30,23 @@ def get_connection():
         user=os.environ.get("MYSQLUSER"),
         password=os.environ.get("MYSQLPASSWORD"),
         database=os.environ.get("MYSQLDATABASE"),
-        port=int(os.environ.get("MYSQLPORT", 3306))
+        port=int(os.environ.get("MYSQLPORT"))
     )
 
 # -------------------------------
-# DECORADORES
+# TEST CONEXIÓN
 # -------------------------------
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if "usuario_id" not in session:
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated_function
-
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("rol") != "administrador":
-            return "Acceso denegado", 403
-        return f(*args, **kwargs)
-    return decorated_function
+@app.route("/test-db")
+def test_db():
+    try:
+        conn = get_connection()
+        conn.close()
+        return "Conexión exitosa 🚀"
+    except Exception as e:
+        return str(e)
 
 # -------------------------------
-# RUTA PARA CREAR BD AUTOMÁTICAMENTE
+# CREAR TABLAS
 # -------------------------------
 @app.route("/init-db")
 def init_db():
@@ -128,7 +120,6 @@ def login():
     return render_template("login.html")
 
 @app.route("/logout")
-@login_required
 def logout():
     session.clear()
     return redirect(url_for("login"))
@@ -137,7 +128,6 @@ def logout():
 # USUARIOS
 # -------------------------------
 @app.route('/usuarios')
-@login_required
 def usuarios():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -147,7 +137,7 @@ def usuarios():
     return render_template('usuarios.html', usuarios=data)
 
 # -------------------------------
-# API LOGIN JWT
+# API LOGIN
 # -------------------------------
 @app.route("/api/login", methods=["POST"])
 def api_login():
