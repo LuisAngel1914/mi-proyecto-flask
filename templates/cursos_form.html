@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo Curso{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Nuevo Curso</h2>
+    <form method="POST" action="{% if curso %}/cursos/actualizar/{{ curso.id }}{% else
+%}/cursos/guardar{% endif %}">
+        <input type="text" name="nombre" class="form-control mb-2"
+        placeholder="Nombre" value="{{ curso.nombre }}" required>
+        <input type="text" name="descripcion" class="form-control mb-2"
+        placeholder="Descripción" value="{{ curso.descripcion }}" required>
+        <button class="btn btn-success">Guardar</button>
+        <a href="/cursos" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

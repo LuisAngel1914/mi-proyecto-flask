@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Inscribir Usuario{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Inscribir a Curso</h2>
+
+    <form method="POST" action="/inscripciones/guardar">
+        <input type="hidden" name="usuario_id" value="{{ usuarios.id }}">
+
+        <div class="mb-3">
+            <label>Alumno</label>
+            <input type="text" class="form-control" value="{{ usuarios.nombre }}" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label>Curso</label>
+            <select name="curso_id" class="form-control" required>
+                {% for c in cursos %}
+                <option value="{{ c.id }}">{{ c.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="btn btn-success">Inscribir</button>
+        <a href="/usuarios" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
