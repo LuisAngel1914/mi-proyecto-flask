@@ -681,4 +681,6 @@ def api_login():
 if __name__ == '__main__':
     # Inicia el servidor de desarrollo
     # debug=True permite ver errores detallados
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+    
