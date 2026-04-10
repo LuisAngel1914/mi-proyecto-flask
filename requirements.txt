@@ -12,3 +12,4 @@ mysql-connector-python==9.6.0
 PyJWT==2.11.0
 Werkzeug==3.1.5
 gunicorn
+Flask-Cors==4.0.0
