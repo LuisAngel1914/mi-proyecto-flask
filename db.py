@@ -1,10 +1,11 @@
+import os
 import mysql.connector
 
 def get_connection():
-# Creamos una conexión a MySQL
     return mysql.connector.connect(
-        host="localhost", # Servidor
-        user="root", # Usuario
-        password="", # Contraseña
-        database="flask_db" # Base de datos
+        host=os.environ.get("MYSQL_HOST"),
+        user=os.environ.get("MYSQL_USER"),
+        password=os.environ.get("MYSQL_PASSWORD"),
+        database=os.environ.get("MYSQL_DATABASE"),
+        port=int(os.environ.get("MYSQL_PORT", 3306))
     )
